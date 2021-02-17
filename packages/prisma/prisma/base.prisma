@@ -38,6 +38,7 @@ model Config {
   address String
   utxoTreeDepth Int
   withdrawalTreeDepth Int
+  layer2TreeDepth Int
   nullifierTreeDepth Int
   challengePeriod Int
   minimumStake String
@@ -48,6 +49,8 @@ model Config {
   utxoSubTreeSize Int
   withdrawalSubTreeDepth Int
   withdrawalSubTreeSize Int
+  layer2SubTreeDepth Int
+  layer2SubTreeSize Int
   @@id([networkId, chainId, address])
 }
 
@@ -73,7 +76,7 @@ model Proposal {
 model Block {
   hash String @id
   header Header @relation(fields: [hash], references: [hash])
-  proposal Proposal
+  proposal Proposal?
   bootstrap Bootstrap?
   slash Slash?
 }
@@ -97,6 +100,8 @@ model Header {
   nullifierRoot String
   withdrawalRoot String
   withdrawalIndex String
+  layer2Root String
+  layer2Index String
   txRoot String
   depositRoot String
   migrationRoot String
@@ -109,6 +114,7 @@ model Bootstrap {
   utxoBootstrap String // jsonified arr : sqlite does not support arr
   // withdrawalBootstrap String[]
   withdrawalBootstrap String //jsonified arr : sqlite does not support arr
+  layer2Bootstrap String //jsonified arr : sqlite does not support arr
   block Block? @relation(fields: [blockHash], references: [hash])
 }
 
@@ -153,6 +159,26 @@ model Withdrawal {
   tokenAddr String
   erc20Amount String
   nft String
+  to String
+  fee String
+  status Int?
+  treeId String?
+  index String?
+  includedIn String?
+  prepayer String?
+  siblings String? // stringified str[]
+}
+
+model Layer2 {
+  hash String @id
+  layer2Hash String
+  eth String
+  owner String?
+  salt String?
+  tokenAddr String
+  erc20Amount String
+  nft String
+  layer2 String
   to String
   fee String
   status Int?

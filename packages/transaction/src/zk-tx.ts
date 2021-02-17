@@ -17,6 +17,7 @@ export interface ZkOutflow {
 }
 
 export interface PublicData {
+  layer2: Field
   to: Field
   eth: Field
   tokenAddr: Field
@@ -245,6 +246,7 @@ export class ZkTx {
           note,
           outflowType,
           data: {
+            layer2: Field.fromBuffer(queue.dequeue(20)),
             to: Field.fromBuffer(queue.dequeue(20)),
             eth: Field.fromBuffer(queue.dequeue(32)),
             tokenAddr: Field.fromBuffer(queue.dequeue(20)),

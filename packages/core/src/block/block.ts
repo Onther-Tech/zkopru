@@ -36,6 +36,8 @@ export class Block {
     utxoBootstrap: Uint256[]
     withdrawalTreeIndex: Uint256
     withdrawalBootstrap: Bytes32[]
+    layer2TreeIndex: Uint256
+    layer2Bootstrap: Bytes32[]
   }
 
   constructor({
@@ -56,6 +58,8 @@ export class Block {
       utxoBootstrap: Uint256[]
       withdrawalTreeIndex: Uint256
       withdrawalBootstrap: Bytes32[]
+      layer2TreeIndex: Uint256
+      layer2Bootstrap: Bytes32[]
     }
   }) {
     this.hash = hash
@@ -94,6 +98,8 @@ export class Block {
       nullifierRoot: this.header.nullifierRoot.toString(),
       withdrawalRoot: this.header.withdrawalRoot.toString(),
       withdrawalIndex: this.header.withdrawalIndex.toString(),
+      layer2Root: this.header.layer2Root.toString(),
+      layer2Index: this.header.layer2Index.toString(),
       txRoot: this.header.txRoot.toString(),
       depositRoot: this.header.depositRoot.toString(),
       migrationRoot: this.header.migrationRoot.toString(),
@@ -121,6 +127,13 @@ export class Block {
           ),
           withdrawalBootstrap: JSON.stringify(
             this.bootstrap.withdrawalBootstrap.map(val => val.toString()),
+          ),
+          layer2TreeIndex: parseInt(
+            this.bootstrap.layer2TreeIndex.toString(),
+            10,
+          ),
+          layer2Bootstrap: JSON.stringify(
+            this.bootstrap.layer2Bootstrap.map(val => val.toString()),
           ),
         }
       : undefined

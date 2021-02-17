@@ -486,7 +486,7 @@ export class ZkWallet {
       const { weiPerByte } = await response.json()
       if (weiPerByte) return weiPerByte
     }
-    throw Error(`${response}`)
+    throw Error(`TEST1 ${response}`)
   }
 
   async sendLayer1Tx<T>({
@@ -580,7 +580,7 @@ export class ZkWallet {
       await this.lockUtxos(tx.inflow)
       return zkTx
     } catch (err) {
-      logger.error(err)
+      logger.error("TEST - 1" + err)
       throw err
     }
   }
@@ -606,7 +606,7 @@ export class ZkWallet {
     const response = await this.sendLayer2Tx(zkTx)
     if (response.status !== 200) {
       await this.unlockUtxos(tx.inflow)
-      throw Error(await response.text())
+      throw Error("TEST2 " + await response.text())
     }
   }
 

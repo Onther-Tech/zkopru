@@ -38,6 +38,7 @@ export class Migration extends Note {
       note: this.hash(),
       outflowType: Migration.outflowType,
       data: {
+        layer2: Field.from("0"),
         to: this.publicData.to,
         eth: this.asset.eth,
         tokenAddr: this.asset.tokenAddr,

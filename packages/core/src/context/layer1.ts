@@ -91,6 +91,7 @@ export class L1Contract extends ZkopruContract {
     let chainId!: number
     let utxoTreeDepth!: number
     let withdrawalTreeDepth!: number
+    let layer2TreeDepth!: number
     let nullifierTreeDepth!: number
     let challengePeriod!: number
     let minimumStake!: string
@@ -101,6 +102,8 @@ export class L1Contract extends ZkopruContract {
     let utxoSubTreeSize!: number
     let withdrawalSubTreeDepth!: number
     let withdrawalSubTreeSize!: number
+    let layer2SubTreeDepth!: number
+    let layer2SubTreeSize!: number
     /** test start */
     /** test ends */
     const tasks = [
@@ -119,6 +122,12 @@ export class L1Contract extends ZkopruContract {
       async () => {
         withdrawalTreeDepth = parseInt(
           await this.upstream.methods.WITHDRAWAL_TREE_DEPTH().call(),
+          10,
+        )
+      },
+      async () => {
+        layer2TreeDepth = parseInt(
+          await this.upstream.methods.LAYER2_TREE_DEPTH().call(),
           10,
         )
       },
@@ -159,6 +168,18 @@ export class L1Contract extends ZkopruContract {
         )
       },
       async () => {
+        layer2SubTreeDepth = parseInt(
+          await this.upstream.methods.LAYER2_SUB_TREE_DEPTH().call(),
+          10,
+        )
+      },
+      async () => {
+        layer2SubTreeSize = parseInt(
+          await this.upstream.methods.LAYER2_SUB_TREE_SIZE().call(),
+          10,
+        )
+      },
+      async () => {
         minimumStake = await this.upstream.methods.MINIMUM_STAKE().call()
       },
       async () => {
@@ -188,11 +209,14 @@ export class L1Contract extends ZkopruContract {
       address: this.address,
       utxoTreeDepth,
       withdrawalTreeDepth,
+      layer2TreeDepth,
       nullifierTreeDepth,
       utxoSubTreeDepth,
       utxoSubTreeSize,
       withdrawalSubTreeDepth,
       withdrawalSubTreeSize,
+      layer2SubTreeDepth,
+      layer2SubTreeSize,
       challengePeriod,
       minimumStake,
       referenceDepth,

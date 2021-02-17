@@ -41,6 +41,7 @@ export class Withdrawal extends Note {
       note: this.hash(),
       outflowType: Field.from(OutflowType.WITHDRAWAL),
       data: {
+        layer2: Field.from("0"),
         to: this.publicData.to,
         eth: this.asset.eth,
         tokenAddr: this.asset.tokenAddr,
@@ -54,6 +55,7 @@ export class Withdrawal extends Note {
 
   withdrawalHash(): Uint256 {
     return Withdrawal.withdrawalHash(this.hash(), {
+      layer2: Field.from("0"),
       to: this.publicData.to,
       eth: this.asset.eth,
       tokenAddr: this.asset.tokenAddr,
@@ -66,6 +68,7 @@ export class Withdrawal extends Note {
   static withdrawalHash(note: Field, publicData: PublicData): Uint256 {
     const concatenated = Buffer.concat([
       note.toBytes32().toBuffer(),
+      publicData.layer2.toAddress().toBuffer(),
       publicData.to.toAddress().toBuffer(),
       publicData.eth.toBytes32().toBuffer(),
       publicData.tokenAddr.toAddress().toBuffer(),

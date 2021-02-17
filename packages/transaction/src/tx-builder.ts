@@ -9,6 +9,7 @@ import { Sum } from './note-sum'
 import { Outflow } from './outflow'
 import { Withdrawal } from './withdrawal'
 import { Migration } from './migration'
+import { Layer2 } from './layer2'
 import { OutflowType } from './note'
 import { RawTx } from './raw-tx'
 
@@ -58,6 +59,7 @@ export class TxBuilder {
     to,
     withdrawal,
     migration,
+    layer2,
   }: {
     eth: F
     to: ZkAddress
@@ -69,13 +71,18 @@ export class TxBuilder {
       to: F
       fee: F
     }
+    layer2?: {
+      to: F
+      layer2: F
+      fee: F
+    }
   }): TxBuilder {
     if (withdrawal && migration)
       throw Error(
         'You should have only one value of withdrawalTo or migrationTo',
       )
     const note = Utxo.newEtherNote({ eth, owner: to })
-    this.send(note, withdrawal, migration)
+    this.send(note, withdrawal, migration, layer2)
     return this
   }
 
@@ -145,9 +152,9 @@ export class TxBuilder {
     const spendables: Utxo[] = [...this.spendables]
     const spendings: Utxo[] = []
     const sendingAmount = Sum.from(this.sendings)
-    const outgoingNotes: (Withdrawal | Migration)[] = this.sendings.filter(
-      sending => sending instanceof Withdrawal || sending instanceof Migration,
-    ) as (Withdrawal | Migration)[]
+    const outgoingNotes: (Withdrawal | Migration | Layer2)[] = this.sendings.filter(
+      sending => sending instanceof Withdrawal || sending instanceof Migration || sending instanceof Layer2,
+    ) as (Withdrawal | Migration | Layer2)[]
     const l1Fee = outgoingNotes.reduce(
       (acc, note) => acc.add(note.publicData.fee),
       Field.zero,
@@ -338,11 +345,18 @@ export class TxBuilder {
       to: F
       fee: F
     },
+    layer2?: {
+      to: F
+      layer2: F
+      fee: F
+    },
   ) {
     if (withdrawal) {
       this.sendings.push(Withdrawal.from(note, withdrawal.to, withdrawal.fee))
     } else if (migration) {
       this.sendings.push(Migration.from(note, migration.to, migration.fee))
+    } else if (layer2) {
+      this.sendings.push(Layer2.from(note, layer2.layer2, layer2.to, layer2.fee))
     } else {
       this.sendings.push(note)
     }

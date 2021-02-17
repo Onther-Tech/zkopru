@@ -15,11 +15,14 @@ export async function loadGrove(db: DB): Promise<{ grove: Grove }> {
   const grove = new Grove(db, {
     utxoTreeDepth: 48,
     withdrawalTreeDepth: 48,
+    layer2TreeDepth: 48,
     nullifierTreeDepth: 254,
     utxoSubTreeSize: 32,
     withdrawalSubTreeSize: 32,
+    layer2SubTreeSize: 32,
     utxoHasher: poseidonHasher(48),
     withdrawalHasher: keccakHasher(48),
+    layer2Hasher: keccakHasher(48),
     nullifierHasher: keccakHasher(254),
     fullSync: true,
     forceUpdate: true,
@@ -43,6 +46,7 @@ export async function loadGrove(db: DB): Promise<{ grove: Grove }> {
         utxos.utxo4_in_3,
       ].map(utxo => ({ hash: utxo.hash(), note: utxo })),
       withdrawals: [],
+      layer2s: [],
       nullifiers: [],
     })
   }

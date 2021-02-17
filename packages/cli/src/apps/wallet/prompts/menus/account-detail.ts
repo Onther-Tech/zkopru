@@ -57,6 +57,7 @@ export default class AccountDetail extends App {
         { title: 'Atomic swap', value: AppMenu.ATOMIC_SWAP },
         { title: 'Withdraw request', value: AppMenu.WITHDRAW_REQUEST },
         { title: 'Withdraw out', value: AppMenu.WITHDRAWABLE_LIST },
+        { title: 'Transfer L2', value: AppMenu.TRANSFER_ETH_L2 },
       ],
     })
     return { next: choice, context: { ...context, balance } }

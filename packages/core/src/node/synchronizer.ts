@@ -207,6 +207,8 @@ export class Synchronizer extends EventEmitter {
             nullifierRoot: genesisHeader.nullifierRoot.toString(),
             withdrawalRoot: genesisHeader.withdrawalRoot.toString(),
             withdrawalIndex: genesisHeader.withdrawalIndex.toString(),
+            layer2Root: genesisHeader.layer2Root.toString(),
+            layer2Index: genesisHeader.layer2Index.toString(),
             txRoot: genesisHeader.txRoot.toString(),
             depositRoot: genesisHeader.depositRoot.toString(),
             migrationRoot: genesisHeader.migrationRoot.toString(),

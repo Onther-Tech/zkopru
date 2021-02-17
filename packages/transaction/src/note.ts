@@ -6,6 +6,7 @@ export enum OutflowType {
   UTXO = 0,
   WITHDRAWAL = 1,
   MIGRATION = 2,
+  LAYER2 = 3,
 }
 
 export enum NoteStatus {

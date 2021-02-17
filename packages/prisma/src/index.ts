@@ -30,6 +30,7 @@ export type NoteSql = Utxo | Withdrawal | Migration
 export enum TreeSpecies {
   UTXO = 0,
   WITHDRAWAL = 1,
+  LAYER2 = 2,
 }
 
 export enum BlockStatus {

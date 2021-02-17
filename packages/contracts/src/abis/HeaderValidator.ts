@@ -24,6 +24,31 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
+  },
+  {
+    inputs: [],
+    name: 'LAYER2_SUB_TREE_DEPTH',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+    constant: true,
+  },
+  {
+    inputs: [],
+    name: 'LAYER2_SUB_TREE_SIZE',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+    constant: true,
+  },
+  {
+    inputs: [],
+    name: 'LAYER2_TREE_DEPTH',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -31,6 +56,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -38,6 +64,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -45,6 +72,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -52,6 +80,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -59,6 +88,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -66,6 +96,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -73,6 +104,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -80,6 +112,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -87,6 +120,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -94,6 +128,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -101,6 +136,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -108,6 +144,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -115,6 +152,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [{ internalType: 'address', name: '', type: 'address' }],
@@ -122,6 +160,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -129,6 +168,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -136,6 +176,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [{ internalType: 'bytes4', name: '', type: 'bytes4' }],
@@ -143,6 +184,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [],
@@ -164,6 +206,7 @@ export const HeaderValidatorABI = [
     outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [{ internalType: 'bytes', name: '', type: 'bytes' }],
@@ -174,6 +217,7 @@ export const HeaderValidatorABI = [
     ],
     stateMutability: 'pure',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [{ internalType: 'bytes', name: '', type: 'bytes' }],
@@ -184,6 +228,7 @@ export const HeaderValidatorABI = [
     ],
     stateMutability: 'pure',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [{ internalType: 'bytes', name: '', type: 'bytes' }],
@@ -194,6 +239,7 @@ export const HeaderValidatorABI = [
     ],
     stateMutability: 'pure',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [{ internalType: 'bytes', name: '', type: 'bytes' }],
@@ -204,6 +250,7 @@ export const HeaderValidatorABI = [
     ],
     stateMutability: 'pure',
     type: 'function',
+    constant: true,
   },
   {
     inputs: [{ internalType: 'bytes', name: '', type: 'bytes' }],
@@ -214,5 +261,6 @@ export const HeaderValidatorABI = [
     ],
     stateMutability: 'view',
     type: 'function',
+    constant: true,
   },
 ]

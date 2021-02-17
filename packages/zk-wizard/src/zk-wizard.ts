@@ -6,6 +6,7 @@ import {
   ZkTx,
   OutflowType,
   Withdrawal,
+  Layer2,
   Migration,
   Utxo,
   ZkAddress,
@@ -78,6 +79,7 @@ export class ZkWizard {
     signer: ZkAccount
     merkleProof: { [hash: number]: MerkleProof<Field> }
   }): Promise<ZkTx> {
+    logger.debug(`buildZkTx 1`,)
     const nIn = tx.inflow.length
     const nOut = tx.outflow.length
     const wasmPath = path.join(
@@ -99,9 +101,9 @@ export class ZkWizard {
     if (!fs.existsSync(wasmPath)) {
       fileNotExistMsg = `Does not have the wasm code for the ${tx.inflow.length} inputs and ${tx.outflow.length} outputs circuit`
     } else if (!fs.existsSync(zkeyPath)) {
-      fileNotExistMsg = `Does not have the zkey for the ${tx.inflow.length} inputs and ${tx.outflow.length} outputs circuit`
+      fileNotExistMsg = `Does not have the zkey for the ${tx.inflow.length} inputs and ${tx.outflow.length} outputs circuit - ${zkeyPath}`
     } else if (!fs.existsSync(vkPath)) {
-      fileNotExistMsg = `Does not have the vk for the ${tx.inflow.length} inputs and ${tx.outflow.length} outputs circuit`
+      fileNotExistMsg = `Does not have the vk for the ${tx.inflow.length} inputs and ${tx.outflow.length} outputs circuit - ${vkPath}`
     }
     if (fileNotExistMsg) throw new Error(fileNotExistMsg)
     const inputs = ZkWizard.snarkInput({
@@ -242,27 +244,27 @@ export class ZkWizard {
         note.outflowType || OutflowType.UTXO,
       ).toBigInt()
       publicDataTo[i] =
-        note instanceof Withdrawal || note instanceof Migration
+        note instanceof Withdrawal || note instanceof Migration || note instanceof Layer2
           ? note.publicData.to.toBigInt()
           : Field.zero.toBigInt()
       publicDataEth[i] =
-        note instanceof Withdrawal || note instanceof Migration
+        note instanceof Withdrawal || note instanceof Migration || note instanceof Layer2
           ? note.eth().toBigInt()
           : Field.zero.toBigInt()
       publicDataTokenAddr[i] =
-        note instanceof Withdrawal || note instanceof Migration
+        note instanceof Withdrawal || note instanceof Migration || note instanceof Layer2
           ? note.tokenAddr().toBigInt()
           : Field.zero.toBigInt()
       publicDataErc20[i] =
-        note instanceof Withdrawal || note instanceof Migration
+        note instanceof Withdrawal || note instanceof Migration || note instanceof Layer2
           ? note.erc20Amount().toBigInt()
           : Field.zero.toBigInt()
       publicDataErc721[i] =
-        note instanceof Withdrawal || note instanceof Migration
+        note instanceof Withdrawal || note instanceof Migration || note instanceof Layer2
           ? note.nft().toBigInt()
           : Field.zero.toBigInt()
       publicDataFee[i] =
-        note instanceof Withdrawal || note instanceof Migration
+        note instanceof Withdrawal || note instanceof Migration || note instanceof Layer2
           ? note.publicData.fee.toBigInt()
           : Field.zero.toBigInt()
     })

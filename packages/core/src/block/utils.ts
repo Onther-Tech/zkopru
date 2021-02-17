@@ -40,6 +40,8 @@ export function sqlToHeader(sql: HeaderSql): Header {
     nullifierRoot: Bytes32.from(sql.nullifierRoot),
     withdrawalRoot: Uint256.from(sql.withdrawalRoot),
     withdrawalIndex: Uint256.from(sql.withdrawalIndex),
+    layer2Root: Uint256.from(sql.layer2Root),
+    layer2Index: Uint256.from(sql.layer2Index),
     txRoot: Bytes32.from(sql.txRoot),
     depositRoot: Bytes32.from(sql.depositRoot),
     migrationRoot: Bytes32.from(sql.migrationRoot),
@@ -58,6 +60,8 @@ export function serializeHeader(header: Header): Buffer {
       header.nullifierRoot,
       header.withdrawalRoot,
       header.withdrawalIndex,
+      header.layer2Root,
+      header.layer2Index,
       header.txRoot,
       header.depositRoot,
       header.migrationRoot,
@@ -198,6 +202,8 @@ export function deserializeHeaderFrom(
     nullifierRoot: queue.dequeueToBytes32(),
     withdrawalRoot: queue.dequeueToUint256(),
     withdrawalIndex: queue.dequeueToUint256(),
+    layer2Root: queue.dequeueToUint256(),
+    layer2Index: queue.dequeueToUint256(),
     txRoot: queue.dequeueToBytes32(),
     depositRoot: queue.dequeueToBytes32(),
     migrationRoot: queue.dequeueToBytes32(),
@@ -228,6 +234,7 @@ export function deserializeTxsFrom(
       let data: PublicData | undefined
       if (!outflowType.isZero()) {
         data = {
+          layer2: Field.from(queue.dequeue(20)),
           to: Field.from(queue.dequeue(20)),
           eth: Field.from(queue.dequeue(32)),
           tokenAddr: Field.from(queue.dequeue(20)),
@@ -345,6 +352,8 @@ export function headerHash(header: Header): Bytes32 {
       header.nullifierRoot,
       header.withdrawalRoot,
       header.withdrawalIndex,
+      header.layer2Root,
+      header.layer2Index,
       header.txRoot,
       header.depositRoot,
       header.migrationRoot,

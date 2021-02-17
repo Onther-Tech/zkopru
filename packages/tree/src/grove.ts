@@ -12,16 +12,20 @@ import { MerkleProof, verifyProof, startingLeafProof } from './merkle-proof'
 import { Leaf } from './light-rollup-tree'
 import { UtxoTree } from './utxo-tree'
 import { WithdrawalTree } from './withdrawal-tree'
+import { Layer2Tree } from './layer2-tree'
 import { NullifierTree } from './nullifier-tree'
 
 export interface GroveConfig {
   utxoTreeDepth: number
   withdrawalTreeDepth: number
+  layer2TreeDepth: number
   nullifierTreeDepth: number
   utxoSubTreeSize: number
   withdrawalSubTreeSize: number
+  layer2SubTreeSize: number
   utxoHasher: Hasher<Field>
   withdrawalHasher: Hasher<BN>
+  layer2Hasher: Hasher<BN>
   nullifierHasher: Hasher<BN>
   fullSync?: boolean
   forceUpdate?: boolean
@@ -33,6 +37,7 @@ export interface GrovePatch {
   header?: string
   utxos: Leaf<Field>[]
   withdrawals: Leaf<BN>[]
+  layer2s: Leaf<BN>[]
   nullifiers: Field[]
 }
 
@@ -41,6 +46,8 @@ export interface GroveSnapshot {
   utxoTreeRoot: Field
   withdrawalTreeIndex: BN
   withdrawalTreeRoot: BN
+  layer2TreeIndex: BN
+  layer2TreeRoot: BN
   nullifierTreeRoot?: BN
 }
 
@@ -54,6 +61,8 @@ export class Grove {
   utxoTree!: UtxoTree
 
   withdrawalTree!: WithdrawalTree
+
+  layer2Tree!: Layer2Tree
 
   nullifierTree?: NullifierTree
 
@@ -135,6 +144,7 @@ export class Grove {
     const result = await this.dryPatch({
       utxos: [],
       withdrawals: [],
+      layer2s: [],
       nullifiers: [],
     })
     return result
@@ -155,12 +165,15 @@ export class Grove {
   ): Promise<{
     utxoTreeId: string
     withdrawalTreeId: string
+    layer2TreeId: string
   }> {
     let utxoTreeId!: string
     let withdrawalTreeId!: string
+    let layer2TreeId!: string
     await this.lock.acquire('grove', async () => {
       utxoTreeId = await this.appendUTXOs(patch.utxos)
       withdrawalTreeId = await this.appendWithdrawals(patch.withdrawals)
+      layer2TreeId = await this.appendLayer2s(patch.layer2s)
       await this.markAsNullified(patch.nullifiers)
       if (this.config.fullSync) {
         await this.recordBootstrap(patch.header)
@@ -169,6 +182,7 @@ export class Grove {
     return {
       utxoTreeId,
       withdrawalTreeId,
+      layer2TreeId,
     }
   }
 
@@ -183,6 +197,9 @@ export class Grove {
           const withdrawalResult = await this.withdrawalTree.dryAppend(
             ...patch.withdrawals.map(leaf => ({ ...leaf, shouldTrack: false })),
           )
+          const layer2Result = await this.layer2Tree.dryAppend(
+            ...patch.layer2s.map(leaf => ({ ...leaf, shouldTrack: false })),
+          )
           const nullifierRoot = await this.nullifierTree?.dryRunNullify(
             ...patch.nullifiers,
           )
@@ -194,6 +211,11 @@ export class Grove {
             Math.ceil(
               patch.withdrawals.length / this.config.withdrawalSubTreeSize,
             )
+          const layer2FixedSizeLen =
+            this.config.layer2SubTreeSize *
+            Math.ceil(
+              patch.layer2s.length / this.config.layer2SubTreeSize,
+            )
 
           result = {
             utxoTreeIndex: utxoResult.index
@@ -204,6 +226,10 @@ export class Grove {
               .addn(withdrawalFixedSizeLen)
               .subn(patch.withdrawals.length),
             withdrawalTreeRoot: withdrawalResult.root,
+            layer2TreeIndex: layer2Result.index
+              .addn(layer2FixedSizeLen)
+              .subn(patch.layer2s.length),
+            layer2TreeRoot: layer2Result.root,
             nullifierTreeRoot: nullifierRoot,
           }
           return result
@@ -295,6 +321,31 @@ export class Grove {
       throw Error('withdrawal tree flushes')
     }
     return this.withdrawalTree.metadata.id
+  }
+
+  private async appendLayer2s(layer2s: Leaf<BN>[]): Promise<string> {
+    const totalItemLen =
+      this.config.layer2SubTreeSize *
+      Math.ceil(layer2s.length / this.config.layer2SubTreeSize)
+
+    const fixedSizeLayer2s: Leaf<BN>[] = Array(totalItemLen).fill({
+      hash: new BN(0),
+    })
+    layer2s.forEach((layer2: Leaf<BN>, index: number) => {
+      fixedSizeLayer2s[index] = layer2
+    })
+    if (!this.layer2Tree) throw Error('Grove is not initialized')
+    if (
+      this.layer2Tree
+        .latestLeafIndex()
+        .addn(totalItemLen)
+        .lte(this.layer2Tree.maxSize())
+    ) {
+      await this.layer2Tree.append(...fixedSizeLayer2s)
+    } else {
+      throw Error('layer2 tree flushes')
+    }
+    return this.layer2Tree.metadata.id
   }
 
   private async markAsNullified(nullifiers: BN[]): Promise<void> {

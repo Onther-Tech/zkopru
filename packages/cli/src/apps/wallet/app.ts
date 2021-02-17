@@ -8,6 +8,7 @@ import AccountDetail from './prompts/menus/account-detail'
 import Deposit from './prompts/menus/account-detail-deposit'
 import DepositEther from './prompts/menus/account-detail-deposit-eth'
 import TransferEth from './prompts/menus/account-detail-transfer-eth'
+import TransferEthL2 from './prompts/menus/account-detail-transfer-eth-l2'
 import TransferMenu from './prompts/menus/account-detail-transfer-menu'
 import WithdrawRequest from './prompts/menus/account-detail-withdraw-request-menu'
 import WithdrawRequestEth from './prompts/menus/account-detail-withdraw-request-eth'
@@ -37,6 +38,7 @@ export class WalletDashboard extends Dashboard<Context, ZkWallet> {
     this.addPromptApp(AppMenu.DEPOSIT_ETHER, new DepositEther(option))
     this.addPromptApp(AppMenu.TRANSFER, new TransferMenu(option))
     this.addPromptApp(AppMenu.TRANSFER_ETH, new TransferEth(option))
+    this.addPromptApp(AppMenu.TRANSFER_ETH_L2, new TransferEthL2(option))
     this.addPromptApp(AppMenu.ATOMIC_SWAP, new AtomicSwap(option))
     this.addPromptApp(
       AppMenu.ATOMIC_SWAP_GIVE_ETH,

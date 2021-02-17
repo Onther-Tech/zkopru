@@ -21,6 +21,12 @@ export class DepositValidator extends Contract {
   methods: {
     CHALLENGE_PERIOD(): TransactionObject<string>
 
+    LAYER2_SUB_TREE_DEPTH(): TransactionObject<string>
+
+    LAYER2_SUB_TREE_SIZE(): TransactionObject<string>
+
+    LAYER2_TREE_DEPTH(): TransactionObject<string>
+
     MAX_BLOCK_SIZE(): TransactionObject<string>
 
     MAX_UTXO(): TransactionObject<string>

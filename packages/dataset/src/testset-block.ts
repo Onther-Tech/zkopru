@@ -25,6 +25,8 @@ export const dummyHeader: Header = {
   utxoIndex: strToField('utxoIndex').toUint256(),
   withdrawalRoot: strToField('withdrawalRoot').toUint256(),
   withdrawalIndex: strToField('withdrawalIndex').toUint256(),
+  layer2Root: strToField('layer2Root').toUint256(),
+  layer2Index: strToField('layer2Index').toUint256(),
   nullifierRoot: strToField('nullifierRoot').toBytes32(),
   txRoot: strToField('txRoot').toBytes32(),
   depositRoot: strToField('depositRoot').toBytes32(),

@@ -53,6 +53,8 @@ export function headerDataToHeader(data: HeaderData): Header {
     nullifierRoot: queue.dequeueToBytes32(),
     withdrawalRoot: queue.dequeueToUint256(),
     withdrawalIndex: queue.dequeueToUint256(),
+    layer2Root: queue.dequeueToUint256(),
+    layer2Index: queue.dequeueToUint256(),
     txRoot: queue.dequeueToBytes32(),
     depositRoot: queue.dequeueToBytes32(),
     migrationRoot: queue.dequeueToBytes32(),

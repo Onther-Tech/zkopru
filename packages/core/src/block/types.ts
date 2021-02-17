@@ -32,6 +32,8 @@ export interface Header {
   utxoIndex: Uint256
   withdrawalRoot: Uint256
   withdrawalIndex: Uint256
+  layer2Root: Uint256
+  layer2Index: Uint256
   nullifierRoot: Bytes32
   txRoot: Bytes32
   depositRoot: Bytes32

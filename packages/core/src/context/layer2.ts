@@ -11,7 +11,7 @@ import AsyncLock from 'async-lock'
 import { Bytes32, Address, Uint256 } from 'soltypes'
 import { logger } from '@zkopru/utils'
 import { Field } from '@zkopru/babyjubjub'
-import { OutflowType, Withdrawal, TokenRegistry } from '@zkopru/transaction'
+import { OutflowType, Withdrawal, Layer2, TokenRegistry } from '@zkopru/transaction'
 import { Block, Header, MassDeposit } from '../block'
 import { BootstrapData } from '../node/bootstrap'
 import { SNARKVerifier, VerifyingKey } from '../snark/snark-verifier'
@@ -233,6 +233,8 @@ export class L2Chain {
         nullifierRoot: Bytes32.from(parentHeader.nullifierRoot),
         withdrawalRoot: Uint256.from(parentHeader.withdrawalRoot),
         withdrawalIndex: Uint256.from(parentHeader.withdrawalIndex),
+        layer2Root: Uint256.from(parentHeader.layer2Root),
+        layer2Index: Uint256.from(parentHeader.layer2Index),
         txRoot: Bytes32.from(parentHeader.txRoot),
         depositRoot: Bytes32.from(parentHeader.depositRoot),
         migrationRoot: Bytes32.from(parentHeader.migrationRoot),
@@ -294,6 +296,7 @@ export class L2Chain {
     const header = block.hash.toString()
     const utxos: Leaf<Field>[] = []
     const withdrawals: Leaf<BN>[] = []
+    const layer2s: Leaf<BN>[] = []
     const nullifiers: Field[] = []
 
     const deposits = await this.getDeposits(...block.body.massDeposits)
@@ -317,6 +320,23 @@ export class L2Chain {
         }
       }
     }
+    const layer2Hashes: { noteHash: Field; layer2Hash: Uint256 }[] = []
+    for (const tx of block.body.txs) {
+      for (const outflow of tx.outflow) {
+        if (outflow.outflowType.eqn(OutflowType.UTXO)) {
+          utxoHashes.push(outflow.note)
+        } else if (outflow.outflowType.eqn(OutflowType.LAYER2)) {
+          if (!outflow.data) throw Error('Layer2 should have public data')
+          layer2Hashes.push({
+            noteHash: outflow.note,
+            layer2Hash: Layer2.layer2Hash(
+              outflow.note,
+              outflow.data,
+            ),
+          })
+        }
+      }
+    }
     const myUtxoList = await this.db.read(prisma =>
       prisma.utxo.findMany({
         where: {
@@ -333,11 +353,22 @@ export class L2Chain {
         },
       }),
     )
+    const myLayer2List = await this.db.read(prisma =>
+      prisma.layer2.findMany({
+        where: {
+          hash: { in: layer2Hashes.map(h => h.noteHash.toString(10)) },
+          treeId: null,
+        },
+      }),
+    )
     const shouldTrack: { [key: string]: boolean } = {}
     for (const myNote of myUtxoList) {
       shouldTrack[myNote.hash] = true
     }
     for (const myNote of myWithdrawalList) {
+      shouldTrack[myNote.hash] = true
+    }
+    for (const myNote of myLayer2List) {
       shouldTrack[myNote.hash] = true
     }
     for (const output of utxoHashes) {
@@ -355,6 +386,14 @@ export class L2Chain {
         shouldTrack: !!keepTrack,
       })
     }
+    for (const hash of layer2Hashes) {
+      const keepTrack = shouldTrack[hash.noteHash.toString(10)]
+      layer2s.push({
+        hash: hash.layer2Hash.toBN(),
+        noteHash: hash.noteHash,
+        shouldTrack: !!keepTrack,
+      })
+    }
     for (const tx of block.body.txs) {
       for (const inflow of tx.inflow) {
         nullifiers.push(inflow.nullifier)
@@ -364,6 +403,7 @@ export class L2Chain {
       header,
       utxos,
       withdrawals,
+      layer2s,
       nullifiers,
     }
   }

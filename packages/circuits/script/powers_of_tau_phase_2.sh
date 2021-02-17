@@ -30,10 +30,11 @@ phase2() {
     rm -rf $TMP_DIR
 }
 
-for circuit_file in "impls"/*.circom;
-do
-    i=$(($i+1))
-    phase2 $circuit_file &
-    if (( $i % $MAX_JOB == 0 )); then wait; fi
-done
+#for circuit_file in "impls"/*.circom;
+#do
+#i=$(($i+1))
+#phase2 $circuit_file &
+phase2 "impls/zk_transaction_1_2.circom" &
+#    if (( $i % $MAX_JOB == 0 )); then wait; fi
+#done
 wait

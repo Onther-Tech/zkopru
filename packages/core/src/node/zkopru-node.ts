@@ -135,12 +135,14 @@ export class ZkopruNode {
     const hashers = {
       utxo: poseidonHasher(config.utxoTreeDepth),
       withdrawal: keccakHasher(config.withdrawalTreeDepth),
+      layer2: keccakHasher(config.layer2TreeDepth),
       nullifier: keccakHasher(config.nullifierTreeDepth),
     }
     const grove = new Grove(db, {
       ...config,
       utxoHasher: hashers.utxo,
       withdrawalHasher: hashers.withdrawal,
+      layer2Hasher: hashers.layer2,
       nullifierHasher: hashers.nullifier,
       fullSync: true,
       forceUpdate: false,

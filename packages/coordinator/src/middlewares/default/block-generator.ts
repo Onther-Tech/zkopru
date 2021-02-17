@@ -9,7 +9,7 @@ import {
   headerHash,
   getMassMigrations,
 } from '@zkopru/core'
-import { OutflowType, Withdrawal } from '@zkopru/transaction'
+import { OutflowType, Withdrawal, Layer2 } from '@zkopru/transaction'
 import { Leaf } from '@zkopru/tree'
 import { logger, root, bnToBytes32, bnToUint256 } from '@zkopru/utils'
 import { Address } from 'soltypes'
@@ -72,16 +72,36 @@ export class BlockGenerator extends GeneratorBase {
       ]
     }, [] as Leaf<BN>[])
 
+    const layer2s: Leaf<BN>[] = txs.reduce((arr, tx) => {
+      return [
+        ...arr,
+        ...tx.outflow
+          .filter(outflow => outflow.outflowType.eqn(OutflowType.LAYER2))
+          .map(outflow => {
+            if (!outflow.data) throw Error('No layer2 public data')
+            return {
+              hash: Layer2.layer2Hash(
+                outflow.note,
+                outflow.data,
+              ).toBN(),
+              noteHash: outflow.note,
+            }
+          }),
+      ]
+    }, [] as Leaf<BN>[])
+
     if (
       pendingMassDeposits.leaves.length ||
       txs.length ||
       this.context.txPool.pendingNum() ||
-      withdrawals.length
+      withdrawals.length ||
+      layer2s.length
     ) {
       logger.info(`Pending deposits: ${pendingMassDeposits.leaves.length}`)
       logger.info(`Picked txs: ${txs.length}`)
       logger.info(`Pending txs: ${this.context.txPool.pendingNum()}`)
       logger.info(`Withdrawals: ${withdrawals.length}`)
+      logger.info(`Layer2s: ${layer2s.length}`)
     }
     const nullifiers = txs.reduce((arr, tx) => {
       return [...arr, ...tx.inflow.map(inflow => inflow.nullifier)]
@@ -97,6 +117,7 @@ export class BlockGenerator extends GeneratorBase {
     const expectedGrove = await layer2.grove.dryPatch({
       utxos,
       withdrawals,
+      layer2s,
       nullifiers,
     })
     logger.info(
@@ -117,6 +138,8 @@ export class BlockGenerator extends GeneratorBase {
       nullifierRoot: bnToBytes32(expectedGrove.nullifierTreeRoot),
       withdrawalRoot: bnToUint256(expectedGrove.withdrawalTreeRoot),
       withdrawalIndex: bnToUint256(expectedGrove.withdrawalTreeIndex),
+      layer2Root: bnToUint256(expectedGrove.layer2TreeRoot),
+      layer2Index: bnToUint256(expectedGrove.layer2TreeIndex),
       txRoot: root(txs.map(tx => tx.hash())),
       depositRoot: root(massDeposits.map(massDepositHash)),
       migrationRoot: root(massMigrations.map(massMigrationHash)),
